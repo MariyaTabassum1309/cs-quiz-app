@@ -1,0 +1,126 @@
+.question-status {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.question-status h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.status-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.status-dot.current {
+  background: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.status-dot.answered {
+  background: #51cf66;
+  border-color: #51cf66;
+}
+
+.status-dot.unanswered {
+  background: #ffffff;
+  border: 2px solid #dee2e6;
+}
+
+.questions-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.8rem;
+}
+
+.question-number {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.question-number:hover {
+  transform: scale(1.1);
+}
+
+.question-number.current {
+  background: #ff6b6b;
+  color: white;
+  border-color: #ff6b6b;
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.question-number.answered {
+  background: #51cf66;
+  color: white;
+  border-color: #51cf66;
+}
+
+.question-number.unanswered {
+  background: #ffffff;
+  color: #666;
+  border: 2px solid #dee2e6;
+}
+
+.question-number.answered:hover {
+  background: #40c057;
+  border-color: #40c057;
+}
+
+.question-number.unanswered:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .questions-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+  
+  .question-number {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+  
+  .status-legend {
+    gap: 1rem;
+  }
+  
+  .legend-item {
+    font-size: 0.8rem;
+  }
+}
