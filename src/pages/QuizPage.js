@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { quizData } from '../data/quizData';
 import Timer from '../components/Timer';
@@ -13,14 +13,15 @@ const QuizPage = () => {
   const [showResults, setShowResults] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
 
-  const questions = quizData[category] || [];
+  // ✅ useMemo ensures questions is not recreated every render
+  const questions = useMemo(() => quizData[category] || [], [category]);
   const totalQuestions = questions.length;
 
   useEffect(() => {
     if (!questions.length) {
       navigate('/');
     }
-  }, [questions, navigate]);
+  }, [questions.length, navigate]); // ✅ depend on length only
 
   const handleAnswerSelect = (questionIndex, optionIndex) => {
     setSelectedAnswers(prev => ({
@@ -29,28 +30,15 @@ const QuizPage = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    setShowResults(true);
-  };
-
-  const handleTimeUp = () => {
-    setShowResults(true);
-  };
-
-  const handleStartQuiz = () => {
-    setQuizStarted(true);
-  };
-
-  const handleQuestionClick = (questionIndex) => {
-    setCurrentQuestion(questionIndex);
-  };
+  const handleSubmit = () => setShowResults(true);
+  const handleTimeUp = () => setShowResults(true);
+  const handleStartQuiz = () => setQuizStarted(true);
+  const handleQuestionClick = (questionIndex) => setCurrentQuestion(questionIndex);
 
   const calculateScore = () => {
     let score = 0;
     questions.forEach((question, index) => {
-      if (selectedAnswers[index] === question.correctAnswer) {
-        score++;
-      }
+      if (selectedAnswers[index] === question.correctAnswer) score++;
     });
     return score;
   };
@@ -86,13 +74,12 @@ const QuizPage = () => {
                 {((score / totalQuestions) * 100).toFixed(1)}%
               </p>
             </div>
-            
+
             <div className="answers-review">
               <h3>Review Answers:</h3>
               {questions.map((question, index) => {
                 const userAnswer = selectedAnswers[index];
                 const isCorrect = userAnswer === question.correctAnswer;
-                
                 return (
                   <div key={question.id} className="answer-item">
                     <div className="question-text">
@@ -100,8 +87,10 @@ const QuizPage = () => {
                     </div>
                     <div className="answer-comparison">
                       <div className={`user-answer ${isCorrect ? 'correct' : 'wrong'}`}>
-                        Your Answer: {userAnswer !== undefined ? 
-                          question.options[userAnswer] : 'Not answered'}
+                        Your Answer:{' '}
+                        {userAnswer !== undefined
+                          ? question.options[userAnswer]
+                          : 'Not answered'}
                       </div>
                       {!isCorrect && (
                         <div className="correct-answer">
@@ -113,11 +102,8 @@ const QuizPage = () => {
                 );
               })}
             </div>
-            
-            <button 
-              className="back-home-btn"
-              onClick={() => navigate('/')}
-            >
+
+            <button className="back-home-btn" onClick={() => navigate('/')}>
               Back to Home
             </button>
           </div>
@@ -134,10 +120,9 @@ const QuizPage = () => {
         <div className="quiz-layout">
           <div className="quiz-main">
             <Timer initialTime={180} onTimeUp={handleTimeUp} />
-            
             <div className="quiz-progress">
               <div className="progress-bar">
-                <div 
+                <div
                   className="progress-fill"
                   style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
                 ></div>
@@ -149,7 +134,6 @@ const QuizPage = () => {
 
             <div className="question-card">
               <h2 className="question-text">{currentQ.question}</h2>
-              
               <div className="options-grid">
                 {currentQ.options.map((option, index) => (
                   <div
@@ -175,7 +159,7 @@ const QuizPage = () => {
                 >
                   Previous
                 </button>
-                
+
                 {currentQuestion === totalQuestions - 1 ? (
                   <button className="submit-btn" onClick={handleSubmit}>
                     Submit Quiz
@@ -183,7 +167,7 @@ const QuizPage = () => {
                 ) : (
                   <button
                     className="nav-btn"
-                    onClick={() => setCurrentQuestion(prev => 
+                    onClick={() => setCurrentQuestion(prev =>
                       Math.min(totalQuestions - 1, prev + 1)
                     )}
                   >
